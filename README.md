@@ -1,4 +1,4 @@
-# bachelorarbeit
+# Bachelorarbeit
 Data: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
 
 Relevant papers:
