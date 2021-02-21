@@ -1,0 +1,12 @@
+import pandas as pd
+
+df_std = pd.read_csv("std.csv", header=0, index_col=0)
+print(df_std)
+attribute_std = {}
+
+for column in df_std:
+    std = df_std[column].std(axis=0, ddof=0)
+    attribute_std[column] = std
+
+sorted_attribute_std = {k: v for k, v in sorted(attribute_std.items(), key=lambda item: item[1])}
+print(sorted_attribute_std)
