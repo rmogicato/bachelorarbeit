@@ -5,7 +5,7 @@ print(df_std)
 attribute_std = {}
 
 for column in df_std:
-    std = df_std[column].std(axis=0, ddof=0)
+    std = df_std[column].mean(axis=0)
     attribute_std[column] = std
 
 sorted_attribute_std = {k: v for k, v in sorted(attribute_std.items(), key=lambda item: item[1])}
