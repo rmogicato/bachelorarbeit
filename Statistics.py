@@ -1,12 +1,21 @@
 import pandas as pd
 import sys
 
-df_attr = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
 pd.set_option('display.max_columns', None)
+
+# loading provided attributes and saving them in data frame df_attr
+df_attr = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
+
+
 df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
 
+# adding a column Id to each
 df_attr["Id"] = df_id["Id"]
 df_attr = df_attr.sort_values(by="Id")
+
+df_attr_automatic = pd.read_csv("extracted_attributes.csv", header=0)
+
+
 # df_attr = df_attr.head(1000)
 print(df_attr)
 
