@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from altair import *
 import matplotlib.backends.backend_pdf
 
-files = ["std.csv", "mean.csv"]
+files = ["std_automatic.csv", "mean_automatic.csv"]
 
 for idx, file in enumerate(files):
     df_raw = pd.read_csv(file, header=0, index_col=0)

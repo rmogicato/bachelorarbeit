@@ -1,20 +1,33 @@
 import pandas as pd
 import sys
+from sklearn import preprocessing
+
+pd.set_option('display.max_columns', None)
 
 
 # gets data frame from txt files
-def get_df():
-    df = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
-    pd.set_option('display.max_columns', None)
+# the boolean automatic determines whether it returns data from the automatic extracted attributes or from the manual ones
+def get_df(automatic):
     df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
+    if automatic:
+        df = pd.read_csv("extracted_attributes.txt", header=0, index_col=0)
+        # sort dataframe by image
+        df = df.sort_values(by="Image")
+        # reset index and drop index column
+        df = df.reset_index(drop="index")
+        # append Id column as the df is already sorted from first to last image
+        df["Id"] = df_id["Id"]
+        # todo: look whether normalization is worthwhile
 
-    df["Id"] = df_id["Id"]
-    df = df.sort_values(by="Id")
-    # df_attr = df_attr.head(1000)
+    else:
+        df = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
+        df["Id"] = df_id["Id"]
+        df = df.sort_values(by="Id")
+
     return df
 
 
-df_attr = get_df()
+df_attr = get_df(True)
 
 # creating df for standard deviation for each person, dropping the column for image
 columns_std = df_attr.columns.to_list()
@@ -48,6 +61,6 @@ for i in ids:
     sys.stdout.write("\rProgress: " + p + "%")
     sys.stdout.flush()
 
-df_std.to_csv("std.csv")
-df_mean.to_csv("mean.csv")
+df_std.to_csv("std_automatic.csv")
+df_mean.to_csv("mean_automatic.csv")
 
