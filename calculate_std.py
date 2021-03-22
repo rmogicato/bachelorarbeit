@@ -10,15 +10,15 @@ pd.set_option('display.max_columns', None)
 def get_df(automatic):
     df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
     if automatic:
-        df = pd.read_csv("extracted_attributes.txt", header=0, index_col=0)
+        df = pd.read_csv("extracted_attributes_training.txt", header=0, index_col=0)
         # sort dataframe by image
         df = df.sort_values(by="Image")
         # reset index and drop index column
         df = df.reset_index(drop="index")
-        # append Id column as the df is already sorted from first to last image
-        df["Id"] = df_id["Id"]
-        # todo: look whether normalization is worthwhile
 
+        # merge on Image to get Id for each image
+        df = df.merge(df_id, how="inner", on="Image")
+        # todo: look whether normalization is worthwhile
     else:
         df = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
         df["Id"] = df_id["Id"]
@@ -28,6 +28,7 @@ def get_df(automatic):
 
 
 df_attr = get_df(True)
+print(df_attr)
 
 # creating df for standard deviation for each person, dropping the column for image
 columns_std = df_attr.columns.to_list()
@@ -41,26 +42,27 @@ df_mean = pd.DataFrame(columns=columns_std)
 # reading out ids and sorting the list
 ids = df_attr["Id"].drop_duplicates().to_list()
 ids = sorted(ids)
+print(ids)
 
-for i in ids:
+for i, identity in enumerate(ids):
     # take all rows with the correct id (all of the same person)
-    df_person = df_attr.loc[df_attr["Id"] == i]
+    df_person = df_attr.loc[df_attr["Id"] == identity]
 
     # adds values to df of std
     std = df_person.std(axis=0, ddof=0)
     std["n"] = len(df_person.index)
-    df_std.loc[i] = std
+    df_std.loc[identity] = std
 
     # adds values to df of mean
     mean = df_person.mean(axis=0)
     mean["n"] = len(df_person.index)
-    df_mean.loc[i] = mean
+    df_mean.loc[identity] = mean
 
     # printing progress
     p = str(round(i / len(ids) * 100, 0))
     sys.stdout.write("\rProgress: " + p + "%")
     sys.stdout.flush()
 
-df_std.to_csv("std_automatic.csv")
-df_mean.to_csv("mean_automatic.csv")
+df_std.to_csv("csv/std_automatic_training.csv")
+df_mean.to_csv("csv/mean_automatic_training.csv")
 
