@@ -6,7 +6,6 @@ mean_file = "csv/mean_automatic_validation.csv"
 std_file = "csv/std_automatic_validation.csv"
 image_threshold = 5
 
-
 df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
 df_raw = pd.read_csv(validation_file, header=0, index_col=0)
 df_raw = df_raw.merge(df_id, how="left", on="Image")
@@ -59,20 +58,23 @@ df_std_male = df_std.loc[df_std["index"].isin(male_ids)]
 df_mean_female = df_mean.loc[df_mean["index"].isin(female_ids)]
 df_std_female = df_std.loc[df_std["index"].isin(female_ids)]
 
-dict_male = {}
-dict_female = {}
 
-for a in attributes:
-    mean = np.round(np.mean(df_mean_male[a].values), 2)
-    std = np.round(np.mean(df_std_male[a].values), 2)
-    dict_male[a] = {"mean": mean, "std": std}
+def get_factors_df(fac_mean, fac_std):
+    dictionary = {}
+    for a in attributes:
+        mean = np.round(np.mean(fac_mean[a].values), 2)
+        std = np.round(np.mean(fac_std[a].values), 2)
+        inverse_std = (1 - std if std < 1 else 0)
+        factor_m = inverse_std ** 2 * mean
+        dictionary[a] = {"mean": mean, "std": std, "factor": factor_m}
+    return dictionary
 
-    mean = np.round(np.mean(df_mean_female[a].values), 2)
-    std = np.round(np.mean(df_std_female[a].values), 2)
-    dict_female[a] = {"mean": mean, "std": std}
 
-df_male = pd.DataFrame.from_dict(dict_male).transpose()
-df_female = pd.DataFrame.from_dict(dict_female).transpose()
+dict_m = get_factors_df(df_mean_male, df_std_female)
+dict_f = get_factors_df(df_mean_female, df_std_female)
 
-print(df_male.sort_values(by="std"))
-print(df_female.sort_values(by="std"))
+df_male = pd.DataFrame.from_dict(dict_m).transpose()
+df_female = pd.DataFrame.from_dict(dict_f).transpose()
+
+print(df_male.sort_values(by="factor"))
+print(df_female.sort_values(by="factor"))
