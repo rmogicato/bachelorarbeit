@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 
 validation_file = "extracted_attributes_validation.txt"
-mean_file = "csv/mean_automatic_validation.csv"
-std_file = "csv/std_automatic_validation.csv"
+mean_file = "calculated_csv/mean_automatic_validation.csv"
+std_file = "calculated_csv/std_automatic_validation.csv"
 image_threshold = 5
 
 df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])

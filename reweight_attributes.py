@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 
-validation_file = "extracted_attributes_training.txt"
-mean_file = "csv/mean_automatic_training.csv"
-std_file = "csv/std_automatic_training.csv"
+validation_file = "data-AFFACT2/extracted_attributes_validation_AFFACT2.txt"
+mean_file = "data-AFFACT2/mean_automatic_validation.calculated_csv"
+std_file = "data-AFFACT2/std_automatic_validation.calculated_csv"
 image_threshold = 0
 
 df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
@@ -71,6 +71,6 @@ for i in ids:
 
 print(df_corrected)
 
-df_corrected.to_csv("extracted_attributes_training_corrected.txt")
+df_corrected.to_csv("data-AFFACT2/extracted_attributes_validation_corrected.txt")
 
 

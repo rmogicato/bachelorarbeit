@@ -8,8 +8,8 @@ from altair import *
 import matplotlib.backends.backend_pdf
 
 stat_type = "std"
-file_training = "csv/std_automatic_training.csv"
-file_validation = "csv/std_automatic_validation.csv"
+file_training = "calculated_csv/std_automatic_training.csv"
+file_validation = "calculated_csv/std_automatic_validation.csv"
 
 df_raw_training = pd.read_csv(file_training, header=0, index_col=0)
 df_raw_validation = pd.read_csv(file_validation, header=0, index_col=0)

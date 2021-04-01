@@ -10,7 +10,7 @@ pd.set_option('display.max_columns', None)
 def get_df(automatic):
     df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
     if automatic:
-        df = pd.read_csv("extracted_attributes_training.txt", header=0, index_col=0)
+        df = pd.read_csv("data-AFFACT2/extracted_attributes_validation_AFFACT2.txt", header=0, index_col=0)
         # sort dataframe by image
         df = df.sort_values(by="Image")
         # reset index and drop index column
@@ -42,7 +42,6 @@ df_mean = pd.DataFrame(columns=columns_std)
 # reading out ids and sorting the list
 ids = df_attr["Id"].drop_duplicates().to_list()
 ids = sorted(ids)
-print(ids)
 
 for i, identity in enumerate(ids):
     # take all rows with the correct id (all of the same person)
@@ -63,6 +62,6 @@ for i, identity in enumerate(ids):
     sys.stdout.write("\rProgress: " + p + "%")
     sys.stdout.flush()
 
-df_std.to_csv("csv/std_automatic_training.csv")
-df_mean.to_csv("csv/mean_automatic_training.csv")
+df_std.to_csv("data-AFFACT2/std_automatic_validation.calculated_csv")
+df_mean.to_csv("data-AFFACT2/mean_automatic_validation.calculated_csv")
 
