@@ -1,13 +1,46 @@
 import numpy as np
 import pandas as pd
 
-validation_file = "data-AFFACT2/extracted_attributes_validation_AFFACT2.txt"
-mean_file = "data-AFFACT2/mean_automatic_validation.calculated_csv"
-std_file = "data-AFFACT2/std_automatic_validation.calculated_csv"
+validation_file = "list_attr_celeba.txt"
+mean_file = "mean.csv"
+std_file = "std.csv"
 image_threshold = 0
+# 0 --> training, 1 --> validation, 2 --> testing
+partitions = [1]
+
+"""
+# linear approach:
+factors = inverse_std * mean
+
+# squared approach:
+factors = inverse_std**2 * mean
+
+# sigmoid approach:
+factors = 1 / (1 + np.exp(x=-inverse_std)
+
+# crazy approach
+factors = np.sign(mean) / (1 + ((inverse_std / (1 - inverse_std)) ** -np.e))
+
+# crazy2 approach marginally bettter than crazy 1
+(1 / (1 + ((inverse_std / (1 - inverse_std)) ** -np.e)))*mean
+
+
+
+
+"""
 
 df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
-df_raw = pd.read_csv(validation_file, header=0, index_col=0)
+df_partition = pd.read_csv("list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
+df_partition = df_partition.merge(df_id, how="left", on="Image")
+
+if validation_file == "list_attr_celeba.txt":
+    df_raw = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
+    cols = df_raw.columns.tolist()
+    cols = cols[1:] + [cols[0]]
+    df_raw = df_raw[cols]
+else:
+    df_raw = pd.read_csv(validation_file, header=0, index_col=0)
+
 df_raw = df_raw.merge(df_id, how="left", on="Image")
 df_mean = pd.read_csv(mean_file, header=0, index_col=0).reset_index()
 df_std = pd.read_csv(std_file, header=0, index_col=0).reset_index()
@@ -18,8 +51,8 @@ df_std = df_std.drop(df_std[df_std.n < image_threshold].index)
 # taking all attributes besides the last two (Image and Id)
 attributes = df_raw.columns.values.tolist()[:-2]
 
-# only keep pictures and their detected attributes of identities that are in mean_file and std_file
-ids = df_mean["index"].tolist()
+# only keep pictures and their detected attributes of identities that are in the partition
+ids = np.unique(df_partition.loc[df_partition["Partition"].isin(partitions)].Id.values)
 df_attributes = df_raw[df_raw["Id"].isin(ids)]
 
 
@@ -41,7 +74,8 @@ for i in ids:
     inverse_std = np.array(inverse_std)
 
     # this determines the weighting factor
-    factors = inverse_std**2 * mean
+
+    factors = inverse_std**3 * np.sign(mean)
     factors = np.append(factors, i)
 
     # append to df
@@ -71,6 +105,6 @@ for i in ids:
 
 print(df_corrected)
 
-df_corrected.to_csv("data-AFFACT2/extracted_attributes_validation_corrected.txt")
+df_corrected.to_csv("ground-truth/corrected_truth.txt")
 
 
