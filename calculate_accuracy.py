@@ -4,7 +4,7 @@ import numpy as np
 pd.set_option("display.max_rows", 100)
 pd.set_option('display.max_columns', 7)
 
-df_validation = pd.read_csv("data-AFFACT2/extracted_attributes_validation_corrected.txt", header=0, index_col=0)
+df_validation = pd.read_csv("data-AFFACT2/extracted_attributes_validation_corrected_cube_approach.txt", header=0, index_col=0)
 df = df_validation
 
 df = df.sort_values(by="Image")
@@ -64,8 +64,8 @@ for col in columns:
 # print("total accuracy: ", (1 - total_correct / (rows * 40)) * 100)
 df_results = pd.DataFrame(data=results)
 total = np.array(df_results.T.error_rate.values)
-
+print(df_results)
 print(df_results.T.error_rate)
 print(np.mean(total))
 
-df_results.to_csv("error_rates/extracted_attributes_validation_corrected_AFFACT2")
+# df_results.to_csv("ground-truth/error_truth.txt")
