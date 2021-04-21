@@ -1,7 +1,7 @@
 import pandas as pd
 
-df_std_automatic = pd.read_csv("calculated_csv/std_automatic_validation.csv", header=0, index_col=0)
-df_std = pd.read_csv("calculated_csv/mean_automatic_validation.csv", header=0, index_col=0)
+df_std_automatic = pd.read_csv("std.csv", header=0, index_col=0)
+df_std = pd.read_csv("mean.csv", header=0, index_col=0)
 attribute_std = {}
 attribute_std_automatic = {}
 difference = {}
@@ -22,5 +22,3 @@ sorted_attribute_std_automatic = {k: v for k, v in sorted(attribute_std_automati
 print(sorted_attribute_std)
 print(sorted_attribute_std_automatic)
 # print(sorted_difference)
-
-

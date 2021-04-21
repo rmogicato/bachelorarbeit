@@ -23,11 +23,10 @@ def get_df(automatic):
         df = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
         df["Id"] = df_id["Id"]
         df = df.sort_values(by="Id")
-
     return df
 
 
-df_attr = get_df(True)
+df_attr = get_df(False)
 print(df_attr)
 
 # creating df for standard deviation for each person, dropping the column for image
