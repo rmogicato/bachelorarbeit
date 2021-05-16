@@ -5,7 +5,7 @@ from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
-files = ["mean.csv", "std.csv"]
+files = ["mean_automatic.calculated_csv", "std_automatic.calculated_csv"]
 colors = ["blue", "red"]
 
 for idx, file in enumerate(files):
