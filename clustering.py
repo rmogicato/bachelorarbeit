@@ -9,8 +9,10 @@ from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA
 import scipy.cluster.hierarchy as shc
 from yellowbrick.cluster import KElbowVisualizer
+import sys
 
 
+np.set_printoptions(threshold=sys.maxsize)
 
 
 df_arcface = pd.read_csv("arc_face/arcface_validation.csv")
@@ -30,15 +32,25 @@ images = images.apply(suffixizer)
 
 res = df_identities.loc[df_identities["Image"].isin(images)]
 ids = res.Id.tolist()
+bins = np.bincount(ids)
+data = []
+for b in bins:
+    if b != 0:
+        data.append(b)
+
+
+bins = np.array(data)
+print(bins)
+
+
 unique_ids = len(np.unique(ids))
-est_ids = (int(unique_ids - (unique_ids*0.1)), int(unique_ids + (unique_ids*0.05)))
+est_ids = (int(unique_ids - (unique_ids*0.8)), int(unique_ids))
 print(est_ids)
 
 df_cosines = df_arcface.drop(columns="Image")
 cosines = df_cosines.values
 
-
-model = sklearn.cluster.AgglomerativeClustering(memory="cluster", affinity="cosine", linkage="average", compute_full_tree=True)
+model = sklearn.cluster.AgglomerativeClustering(memory="cluster", affinity="cosine", linkage="complete", compute_full_tree=True)
 # cluster.fit(cosines)
 
 visualizer = KElbowVisualizer(model, k=est_ids)
@@ -52,12 +64,10 @@ model.n_clusters = value
 model.fit(cosines)
 
 labels = np.array(model.labels_)
-print(labels)
 count = np.bincount(labels)
 print(count)
 print(count.shape)
-print("median: ", np.median(count))
-
+print("stds: ", np.std(bins), np.std(count))
 
 
 """
