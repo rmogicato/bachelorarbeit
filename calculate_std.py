@@ -2,15 +2,13 @@ import pandas as pd
 import sys
 from sklearn import preprocessing
 
-pd.set_option('display.max_columns', None)
-
 
 # gets data frame from txt files
 # the boolean automatic determines whether it returns data from the automatic extracted attributes or from the manual ones
-def get_df(automatic):
+def get_df(filename, automatic):
     df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
     if automatic:
-        df = pd.read_csv("data-AFFACT2/extracted_attributes_validation_AFFACT2.txt", header=0, index_col=0)
+        df = pd.read_csv(filename, header=0, index_col=0)
         # sort dataframe by image
         df = df.sort_values(by="Image")
         # reset index and drop index column
@@ -26,41 +24,46 @@ def get_df(automatic):
     return df
 
 
-df_attr = get_df(False)
-print(df_attr)
+def calculate_statistics(url, automatic=False):
 
-# creating df for standard deviation for each person, dropping the column for image
-columns_std = df_attr.columns.to_list()
-columns_std.remove("Image")  # dropping image
-columns_std.remove("Id")  # dropping id
-columns_std.append("n")
+    df_attr = get_df(filename=url, automatic=automatic)
+    print(df_attr)
 
-df_std = pd.DataFrame(columns=columns_std)
-df_mean = pd.DataFrame(columns=columns_std)
+    # creating df for standard deviation for each person, dropping the column for image
+    columns_std = df_attr.columns.to_list()
+    columns_std.remove("Image")  # dropping image
+    columns_std.remove("Id")  # dropping id
+    columns_std.append("n")
 
-# reading out ids and sorting the list
-ids = df_attr["Id"].drop_duplicates().to_list()
-ids = sorted(ids)
+    df_std = pd.DataFrame(columns=columns_std)
+    df_mean = pd.DataFrame(columns=columns_std)
 
-for i, identity in enumerate(ids):
-    # take all rows with the correct id (all of the same person)
-    df_person = df_attr.loc[df_attr["Id"] == identity]
+    # reading out ids and sorting the list
+    ids = df_attr["Id"].drop_duplicates().to_list()
+    ids = sorted(ids)
 
-    # adds values to df of std
-    std = df_person.std(axis=0, ddof=0)
-    std["n"] = len(df_person.index)
-    df_std.loc[identity] = std
+    for i, identity in enumerate(ids):
+        # take all rows with the correct id (all of the same person)
+        df_person = df_attr.loc[df_attr["Id"] == identity]
 
-    # adds values to df of mean
-    mean = df_person.mean(axis=0)
-    mean["n"] = len(df_person.index)
-    df_mean.loc[identity] = mean
+        # adds values to df of std
+        std = df_person.std(axis=0, ddof=0)
+        std["n"] = len(df_person.index)
+        df_std.loc[identity] = std
 
-    # printing progress
-    p = str(round(i / len(ids) * 100, 0))
-    sys.stdout.write("\rProgress: " + p + "%")
-    sys.stdout.flush()
+        # adds values to df of mean
+        mean = df_person.mean(axis=0)
+        mean["n"] = len(df_person.index)
+        df_mean.loc[identity] = mean
 
-df_std.to_csv("data-AFFACT2/std_automatic_validation.calculated_csv")
-df_mean.to_csv("data-AFFACT2/mean_automatic_validation.calculated_csv")
+        # printing progress
+        p = str(round(i / len(ids) * 100, 0))
+        sys.stdout.write("\r Calculating standard deviation and mean. Progress: " + p + "%")
+        sys.stdout.flush()
+    return df_std, df_mean
 
+
+df_std, df_mean = calculate_statistics("extractions/new_testing_AFFACT1.txt", True)
+
+df_mean.to_csv("extractions/means/mean_gt_testing_AFFACT1.txt")
+df_std.to_csv("extractions/stds/std_gt_testing_AFFACT1.txt")

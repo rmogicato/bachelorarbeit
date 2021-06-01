@@ -5,19 +5,46 @@ import numpy as np
 pd.set_option("display.max_rows", 100)
 pd.set_option('display.max_columns', 7)
 
-df1 = pd.read_csv("error_rates/extracted_attributes_validation_AFFACT2", header=0, index_col=0)
-df2 = pd.read_csv("error_rates/extracted_attributes_validation_corrected_cubic_AFFACT2", header=0, index_col=0)
-df3 = pd.read_csv("error_rates/extracted_attributes_validation_corrected_square_AFFACT2", header=0, index_col=0)
+df1 = pd.read_csv("error_rates/er_arcface_validation_arcface_reweighed_cube_sign_AFFACT1.txt", header=0, index_col=0)
+df2 = pd.read_csv("error_rates/er_new_validation_AFFACT1.txt", header=0, index_col=0)
+df3 = pd.read_csv("error_rates/validation_reweighed_cube_sign.txt", header=0, index_col=0)
 
+dfs = [df1, df2, df3]
 # set width of bars
 barWidth = 0.25
 
-print(df1)
+false_positive_rates = []
+false_negative_rates = []
+balanced_total = []
+
+for df in dfs:
+    # summing up the numbers of all attributes
+    column_list = list(df)
+    df["sum"] = df[column_list].sum(axis=1)
+
+    fp = df.at["false_positives", "sum"]
+    tp = df.at["correct_positives", "sum"]
+    fn = df.at["false_negatives", "sum"]
+    tn = df.at["correct_negatives", "sum"]
+
+    # false positive rate
+    fp_rate = fp / (fp + tp)
+    false_positive_rates.append(fp_rate)
+
+    # false negative rate
+    fn_rate = fn / (fn + tn)
+    false_negative_rates.append(fn_rate)
+
+    # balanced error rate
+
+    balanced_error_rate = 0.5 * (fp_rate + fn_rate)
+    balanced_total.append(balanced_error_rate)
+
 
 # set heights of bars
-bars1 = [np.mean(df1.T.fp_rate.values), np.mean(df1.T.fn_rate.values), np.mean(df1.T.error_rate.values)]
-bars2 = [np.mean(df2.T.fp_rate.values), np.mean(df2.T.fn_rate.values), np.mean(df2.T.error_rate.values)]
-bars3 = [np.mean(df3.T.fp_rate.values), np.mean(df3.T.fn_rate.values), np.mean(df3.T.error_rate.values)]
+bars1 = [false_positive_rates[0], false_negative_rates[0], balanced_total[0]]
+bars2 = [false_positive_rates[1], false_negative_rates[1], balanced_total[1]]
+bars3 = [false_positive_rates[2], false_negative_rates[2], balanced_total[2]]
 
 # Set position of bar on X axis
 r1 = np.arange(len(bars1))
