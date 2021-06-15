@@ -5,9 +5,9 @@ from bokeh.models import ColumnDataSource, FactorRange
 from bokeh.plotting import figure
 from bokeh.transform import dodge
 
-error_rate_1 = pd.read_csv("error_rates/er_new_testing_AFFACT2", header=0, index_col=0)
-error_rate_2 = pd.read_csv("error_rates/er_arcface_testing_arcface_reweighed_square_mean_AFFACT2.txt", header=0, index_col=0)
-error_rate_3 = pd.read_csv("error_rates/er_gt_square_mean_AFFACT2", header=0, index_col=0)
+error_rate_1 = pd.read_csv("error_rates/er_new_testing_AFFACT1.txt", header=0, index_col=0)
+error_rate_2 = pd.read_csv("error_rates/er_arcface_testing_reweighed_square_mean_AFFACT1.txt", header=0, index_col=0)
+error_rate_3 = pd.read_csv("error_rates/er_arcface_testing_reweighed_cube_mean_AFFACT1.txt", header=0, index_col=0)
 
 attributes = error_rate_1.columns.to_list()
 reweigh_methods = ["no_reweigh", "reweigh with arcface", "reweigh ground truth"]
@@ -29,9 +29,9 @@ def get_balanced_error_rate(row):
 
 
 for a in attributes:
-    method1.append(get_unbalanced_error_rate(error_rate_1[a]))
-    method2.append(get_unbalanced_error_rate(error_rate_2[a]))
-    method3.append(get_unbalanced_error_rate(error_rate_3[a]))
+    method1.append(get_balanced_error_rate(error_rate_1[a]))
+    method2.append(get_balanced_error_rate(error_rate_2[a]))
+    method3.append(get_balanced_error_rate(error_rate_3[a]))
 
 attributes.append("total")
 method1.append(np.array(method1).mean())
@@ -47,7 +47,7 @@ data = {
 
 source = ColumnDataSource(data=data)
 
-p = figure(x_range=attributes, y_range=(0, 0.3), plot_height=1000, title="Unbalanced error rates per attribute ",
+p = figure(x_range=attributes, y_range=(0, 0.5), plot_height=1000, title="Balanced error rates per attribute ",
            toolbar_location=None, tools="")
 
 p.vbar(x=dodge('attributes', -0.25, range=p.x_range), top=reweigh_methods[0], width=0.2, source=source,

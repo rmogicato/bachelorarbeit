@@ -77,13 +77,11 @@ for s in range(int(sample_size/2)):
     scores_diff_id += diff_id
     scores_same_id += same_id
 
-print(scores_same_id)
-
 plt.figure(figsize=(8,6))
 plt.hist(scores_same_id, bins="auto", alpha=0.5, label="scores of same identity")
 plt.hist(scores_diff_id, bins="auto", alpha=0.5, label="scores of different identity")
 plt.xlabel("Score", size=14)
 plt.ylabel("Count", size=14)
 plt.title("Score comparison between same and different identities")
-plt.legend(loc='upper right')
+plt.legend(loc='upper left')
 plt.show()

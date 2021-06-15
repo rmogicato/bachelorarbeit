@@ -4,10 +4,12 @@ from sklearn import preprocessing
 
 
 # gets data frame from txt files
-# the boolean automatic determines whether it returns data from the automatic extracted attributes or from the manual ones
-def get_df(filename, automatic):
-    df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
-    if automatic:
+def get_df(filename, df_id):
+    if filename == "list_attr_celeba.txt":
+        df = pd.read_csv(filename, sep='\s+', header=0)
+        df = df.merge(df_id, on="Image")
+        df = df.sort_values(by="Id")
+    else:
         df = pd.read_csv(filename, header=0, index_col=0)
         # sort dataframe by image
         df = df.sort_values(by="Image")
@@ -16,18 +18,12 @@ def get_df(filename, automatic):
 
         # merge on Image to get Id for each image
         df = df.merge(df_id, how="inner", on="Image")
-        # todo: look whether normalization is worthwhile
-    else:
-        df = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
-        df["Id"] = df_id["Id"]
-        df = df.sort_values(by="Id")
     return df
 
 
-def calculate_statistics(url, automatic=False):
+def calculate_statistics(filename, df_id):
 
-    df_attr = get_df(filename=url, automatic=automatic)
-    print(df_attr)
+    df_attr = get_df(filename, df_id)
 
     # creating df for standard deviation for each person, dropping the column for image
     columns_std = df_attr.columns.to_list()
@@ -60,10 +56,18 @@ def calculate_statistics(url, automatic=False):
         p = str(round(i / len(ids) * 100, 0))
         sys.stdout.write("\r Calculating standard deviation and mean. Progress: " + p + "%")
         sys.stdout.flush()
+    print("\nDone!\n")
     return df_std, df_mean
 
+"""
+df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
+partition = pd.read_csv("list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
+images = partition.loc[partition.Partition == 2].Image.values
+df_id = df_id.loc[df_id.Image.isin(images)]
 
-df_std, df_mean = calculate_statistics("extractions/new_testing_AFFACT1.txt", True)
 
-df_mean.to_csv("extractions/means/mean_gt_testing_AFFACT1.txt")
-df_std.to_csv("extractions/stds/std_gt_testing_AFFACT1.txt")
+df_std, df_mean = calculate_statistics("list_attr_celeba.txt", df_id)
+
+# df_mean.to_csv("extractions/means/mean_gt_testing_AFFACT1.txt")
+# df_std.to_csv("extractions/stds/std_gt_testing_AFFACT1.txt")
+"""
