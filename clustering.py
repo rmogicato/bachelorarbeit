@@ -41,22 +41,23 @@ print(bins)
 
 unique_ids = len(np.unique(ids))
 print(unique_ids)
-est_ids = (int(unique_ids + unique_ids * 0.2), int(unique_ids + unique_ids * 0.4))
-est_ids = (1110, 1160)
+est_ids = (int(unique_ids - unique_ids * 0.2), int(unique_ids + unique_ids * 0.4))
 
 df_cosines = df_arcface.drop(columns="Image")
 cosines = df_cosines.values
-
-model = sklearn.cluster.AgglomerativeClustering(memory="cluster", affinity="cosine", linkage="complete",
+model = sklearn.cluster.AgglomerativeClustering(memory="cluster", affinity="euclidean", linkage="complete",
                                                 compute_full_tree=True)
-model.n_clusters = 1142
+
+"""
+model.n_clusters = 1163
 model.fit(cosines)
 labels = np.array(model.labels_)
 print(labels.shape)
 
 df_clustered = pd.DataFrame(data=labels, index=images.values)
 df_clustered = df_clustered.reset_index()
-df_clustered.to_csv("ids/arcface_testing_ids.txt", index=False, sep=" ", header=False)
+df_clustered.to_csv("ids/arcface_testing_euclidean_ids.txt", index=False, sep=" ", header=False)
+
 
 """
 def silhouette(model, n_clusters):
@@ -86,7 +87,7 @@ for key in s_scores:
 sorted_attribute_std = {k: v for k, v in sorted(s_scores.items(), key=lambda item: item[1])}
 print(sorted_attribute_std)
 plt.show()
-"""
+
 
 """
 visualizer = KElbowVisualizer(model, k=est_ids)

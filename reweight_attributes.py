@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import sys
 
+from helper import calculate_distribution
+
 
 def get_weighs(df_mean, df_std, ids, reweigh_formula):
     df_factors = pd.DataFrame()
@@ -17,6 +19,8 @@ def get_weighs(df_mean, df_std, ids, reweigh_formula):
         "cinq_sign": lambda i_s, m: inverse_std ** 5 * np.sign(m),
         "cinq_mean": lambda i_s, m: inverse_std ** 5 * m,
         "cosine_mean": lambda i_s, m: ((-np.cos(i_s*np.pi)+1)/2) * np.sign(m),
+        "sigmoid1": lambda i_s, m: 1/(1+np.e**(-10*(i_s - 0.5))) * np.sign(m),
+        "sigmoid2": lambda i_s, m: 1/(1+np.e**(-10*(i_s - 0.6))) * np.sign(m),
     }
 
     if reweigh_formula not in list(formulas.keys()):
@@ -24,8 +28,8 @@ def get_weighs(df_mean, df_std, ids, reweigh_formula):
 
     for i in ids:
         # taking mean and std without the last column (n)
-        mean = np.array(df_mean.iloc[i].tolist()[0:40])
-        std = np.array(df_std.iloc[i].tolist()[0:40])
+        mean = np.array(df_mean.loc[i].tolist()[0:40])
+        std = np.array(df_std.loc[i].tolist()[0:40])
         inverse_std = []
         for s in std:
             if s < 1:
@@ -91,18 +95,6 @@ def calculate_probability(df_target_dist, df_source_dist):
         df_probability["positive"][a] = p_positive
         df_probability["negative"][a] = p_negative
     return df_probability
-
-
-def calculate_distribution(df_raw):
-    attributes = df_raw.columns[:40].tolist()
-    df_dist = pd.DataFrame(index=attributes, columns=["positive", "negative"])
-    for a in attributes:
-        col = np.array(df_raw[a].to_list())
-        positive = np.count_nonzero(col > 0) / len(col)
-        negative = 1 - positive
-        df_dist["positive"][a] = positive
-        df_dist["negative"][a] = negative
-    return df_dist
 
 
 def reweight_attributes(raw_file, df_mean, df_std, df_id, reweigh_formula, balanced):
