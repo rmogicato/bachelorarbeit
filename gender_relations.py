@@ -1,13 +1,14 @@
 import pandas as pd
 import numpy as np
 
-validation_file = "extracted_attributes_validation.txt"
-mean_file = "calculated_csv/mean_automatic_validation.csv"
-std_file = "calculated_csv/std_automatic_validation.csv"
+
+validation_file = "list_attr_celeba.txt"
+mean_file = "mean.csv"
+std_file = "std.csv"
 image_threshold = 5
 
 df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
-df_raw = pd.read_csv(validation_file, header=0, index_col=0)
+df_raw = pd.read_csv(validation_file, header=0, sep='\s+')
 df_raw = df_raw.merge(df_id, how="left", on="Image")
 df_mean = pd.read_csv(mean_file, header=0, index_col=0).reset_index()
 df_std = pd.read_csv(std_file, header=0, index_col=0).reset_index()
@@ -16,7 +17,7 @@ df_mean = df_mean.drop(df_mean[df_mean.n < image_threshold].index)
 df_std = df_std.drop(df_std[df_std.n < image_threshold].index)
 
 # taking all attributes besides the last two (Image and Id)
-attributes = df_raw.columns.values.tolist()[:-2]
+attributes = df_raw.columns.values.tolist()[1:-1]
 print(attributes)
 # only keep pictures and their detected attributes of identities that are in mean_file and std_file
 ids = df_mean["index"].tolist()
@@ -76,5 +77,8 @@ dict_f = get_factors_df(df_mean_female, df_std_female)
 df_male = pd.DataFrame.from_dict(dict_m).transpose()
 df_female = pd.DataFrame.from_dict(dict_f).transpose()
 
-print(df_male.sort_values(by="factor"))
-print(df_female.sort_values(by="factor"))
+# print(df_male.sort_values(by="factor"))
+# print(df_female.sort_values(by="factor"))
+
+attr = df_raw.loc[df_raw.Id == 6101]
+print(attr)
