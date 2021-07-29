@@ -57,22 +57,25 @@ def calculate_accuracy(df):
             "correct_negatives": correct_negatives,
         }
 
-    df_results = pd.DataFrame(data=results)
+    error_rate_types = ["false_negative_rate", "false_positive_rate", "balanced_error_rate", "unbalanced_error_rate"]
+    df_detailed = pd.DataFrame(index=columns, columns=error_rate_types)
     balanced_accuracy = []
 
-    df_calculated_results = pd.DataFrame(columns=["Balanced equal", "Balanced adapted", "Unbalanced"], index=columns)
+    df_calculated_results = pd.DataFrame(columns=["Balanced", "Unbalanced"], index=columns)
 
     for key in results:
         row = results[key]
 
-        sensitivity = row["correct_positives"] / (row["correct_positives"] + row["false_negatives"])
-        specificity = row["correct_negatives"] / (row["false_positives"] + row["correct_negatives"])
-        accuracy = (sensitivity + specificity) / 2
-        balanced_accuracy.append(accuracy)
-        df_calculated_results["Balanced equal"][key] = 1 - accuracy
+        false_negative_rate = row["false_negatives"] / (row["false_negatives"] + row["correct_positives"] )
+        false_positive_rate = row["false_positives"] / (row["false_positives"] + row["correct_negatives"])
+        error_rate = (false_negative_rate + false_positive_rate)/2
+        balanced_accuracy.append(error_rate)
+        df_detailed["false_negative_rate"][key] = false_negative_rate
+        df_detailed["false_positive_rate"][key] = false_positive_rate
+        df_detailed["balanced_error_rate"][key] = error_rate
+        df_calculated_results["Balanced"][key] = round(error_rate*100, 2)
 
-    average_balanced = 1 - np.array(balanced_accuracy).mean()
-    print(round((1 - average_balanced)*100,2))
+    average_balanced = round(np.array(balanced_accuracy).mean()*100, 2)
 
     unbalanced_accuracy = []
     for key in results:
@@ -81,23 +84,10 @@ def calculate_accuracy(df):
                     row["correct_positives"] + row["correct_negatives"] + row["false_positives"] + row[
                 "false_negatives"])
         unbalanced_accuracy.append(1 - accuracy)
-        df_calculated_results["Unbalanced"][key] = 1 - accuracy
+        df_calculated_results["Unbalanced"][key] = round((1 - accuracy)*100, 2)
+        df_detailed["balanced_error_rate"][key] = 1 - accuracy
         # print(key, accuracy)
-    average_unbalanced = np.array(unbalanced_accuracy).mean()
-    print(round((1 - average_unbalanced)*100, 2))
-    df_target_dist = pd.read_csv("training_attribute_distribution.csv", index_col=0, header=0)
-
-    balanced_er = []
-    for key in results:
-        row = results[key]
-        s1 = row["false_negatives"]*df_target_dist["positive"][key] / (row["correct_positives"]+row["false_negatives"])
-        s2 = row["false_positives"]*df_target_dist["negative"][key] / (row["correct_negatives"]+row["false_positives"])
-        ber = s1 + s2
-        balanced_er.append(ber)
-        df_calculated_results["Balanced adapted"][key] = ber
-    average_balanced2 = np.array(balanced_er).mean()
-    print("average: ", average_balanced2)
-    # df_calculated_results["Unbalanced"][key] = 1 - accuracy
+    average_unbalanced = round(np.array(unbalanced_accuracy).mean()*100, 2)
     """
     balanced_er2 = []
     for key in results:
@@ -114,8 +104,14 @@ def calculate_accuracy(df):
         balanced_er2.append(errors)
     print("average 2: ", np.array(balanced_er2).mean())
     """
-    df_calculated_results.loc["Average"] = [average_balanced, average_balanced2, average_unbalanced]
-    return df_calculated_results
+    df_calculated_results.loc["Average"] = [average_balanced, average_unbalanced]
+    print(average_balanced, average_unbalanced)
+    averages = []
+    for t in error_rate_types:
+        column = np.array(df_detailed[t].values)
+        averages.append(column.mean())
+    df_detailed.loc["Average"] = averages
+    return df_calculated_results, df_detailed
 
 
 

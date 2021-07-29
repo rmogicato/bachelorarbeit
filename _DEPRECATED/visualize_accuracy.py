@@ -5,9 +5,9 @@ import numpy as np
 pd.set_option("display.max_rows", 100)
 pd.set_option('display.max_columns', 7)
 
-df1 = pd.read_csv("error_rates/er_arcface_testing_arcface_reweighed_square_mean_AFFACT2.txt", header=0, index_col=0)
-df2 = pd.read_csv("error_rates/er_new_validation_AFFACT1.txt", header=0, index_col=0)
-df3 = pd.read_csv("error_rates/validation_reweighed_cube_sign.txt", header=0, index_col=0)
+df1 = pd.read_csv("../error_rates/er_arcface_testing_arcface_reweighed_square_mean_AFFACT2.txt", header=0, index_col=0)
+df2 = pd.read_csv("../error_rates/er_new_validation_AFFACT1.txt", header=0, index_col=0)
+df3 = pd.read_csv("../error_rates/validation_reweighed_cube_sign.txt", header=0, index_col=0)
 
 dfs = [df1, df2, df3]
 # set width of bars
