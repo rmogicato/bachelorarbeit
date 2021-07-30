@@ -6,6 +6,9 @@ from sklearn import preprocessing
 
 
 # gets data frame from txt files
+from helper import calculate_probability, calculate_distribution
+
+
 def get_df(filename, df_id):
     if filename == "list_attr_celeba.txt":
         df = pd.read_csv(filename, sep='\s+', header=0)
@@ -40,12 +43,15 @@ def calculate_statistics(filename, df_id, balanced=False):
     ids = df_attr["Id"].drop_duplicates().to_list()
     ids = sorted(ids)
 
+    # calculating the probability which we later use if we use the balanced std/mean
+    df_source_dist = calculate_distribution(df_attr)
+    df_probability = calculate_probability(df_source_dist)
+
     for i, identity in enumerate(ids):
         # take all rows with the correct id (all of the same person)
         df_person = df_attr.loc[df_attr["Id"] == identity]
 
         if balanced:
-            df_probability = pd.read_csv("visalualizer/probability_testing_AFFACT1.csv", header=0, index_col=0)
             means = {}
 
             for j, a in enumerate(df_person.columns.to_list()[:40]):

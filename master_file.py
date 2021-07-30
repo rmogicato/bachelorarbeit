@@ -22,8 +22,8 @@ df_id_gt = get_ids_by_partition(2)
 df_std_gt, df_mean_gt = calculate_statistics(testing_file, df_id_gt, balanced=True)
 df_std_af, df_mean_af = calculate_statistics(testing_file, df_id_af, balanced=True)
 
-df_reweighed_af = reweight_attributes(testing_file, df_mean_af, df_std_af, df_id_af, reweigh_formula="square_sign", balanced=False)
-df_reweighed_gt = reweight_attributes(testing_file, df_mean_gt, df_std_gt, df_id_gt, reweigh_formula="square_sign", balanced=False)
+df_reweighed_af = reweight_attributes(testing_file, df_mean_af, df_std_af, df_id_af, reweigh_formula="square_sign")
+df_reweighed_gt = reweight_attributes(testing_file, df_mean_gt, df_std_gt, df_id_gt, reweigh_formula="square_sign")
 
 
 

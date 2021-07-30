@@ -35,6 +35,7 @@ def get_weights(df_mean, df_std, ids, reweight_formula):
         # taking mean and std of the first 40 entries (attributes)
         mean = np.array(df_mean.loc[i].tolist()[0:40])
         std = np.array(df_std.loc[i].tolist()[0:40])
+
         inverse_std = []
 
         # calculating 1-std and making sure that there are no negative values
@@ -49,6 +50,11 @@ def get_weights(df_mean, df_std, ids, reweight_formula):
         # gets formula from dictionary
         factors = formulas[reweight_formula](inverse_std, mean)
 
+        """
+        # this statement assures that identities with images ("n") under a certain threshold remain unchanged
+        if df_std.loc[i]["n"] <= 5:
+            factors = np.zeros(40)
+        """
         row_df = pd.DataFrame([factors], index=[i])
 
         # append to df
@@ -56,55 +62,6 @@ def get_weights(df_mean, df_std, ids, reweight_formula):
 
     return df_factors
 
-
-def balance_weighs(df_factors, df_source_dist, df_raw):
-    # calculating target distribution from df_raw
-    df_target_dist = calculate_distribution(df_raw)
-    # calculating probability based on target and source distribution
-    df_probability = calculate_probability(df_source_dist)
-    df_factors_new = df_factors
-    # balancing all the weights
-    for a in df_probability.index.tolist():
-        factors = df_factors[a].values
-        reweighed_factors = []
-        for f in factors:
-            # if factor is negative with the negative probability
-            if f < 0:
-                p = df_probability["negative"][a]
-                reweighed_factors.append(f * p)
-            # else with the positive factor
-            else:
-                p = df_probability["positive"][a]
-                reweighed_factors.append(f * p)
-        df_factors_new[a] = reweighed_factors
-    return df_factors_new
-
-
-"""
-this function computes the probability associated with each cluster.
-The formula was taken from MOON, arXiv:1603.07027
-"""
-
-
-def calculate_probability(df_source_dist):
-    attributes = df_source_dist.index.tolist()
-    df_probability = pd.DataFrame(columns=["positive", "negative"], index=attributes)
-    for a in attributes:
-        t_p = 0.5
-        s_p = df_source_dist["positive"][a]
-        t_n = 0.5
-        s_n = df_source_dist["negative"][a]
-        if t_p > s_p:
-            p_positive = 1
-        else:
-            p_positive = (s_n * t_p) / (s_p * t_n)
-        if t_n > s_n:
-            p_negative = 1
-        else:
-            p_negative = (s_p * t_n) / (s_n * t_p)
-        df_probability["positive"][a] = p_positive
-        df_probability["negative"][a] = p_negative
-    return df_probability
 
 
 """
@@ -114,7 +71,7 @@ If the parameter balanced is True, then the weights will be balanced based on th
 """
 
 
-def reweight_attributes(raw_file, df_mean, df_std, df_id, reweigh_formula, balanced):
+def reweight_attributes(raw_file, df_mean, df_std, df_id, reweigh_formula):
 
     if raw_file == "list_attr_celeba.txt":
         df_raw = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
@@ -136,10 +93,6 @@ def reweight_attributes(raw_file, df_mean, df_std, df_id, reweigh_formula, balan
     columns = df_raw.columns.values.tolist()[:-2]
     columns.insert(0, "Id")
     df_factors.columns = columns
-
-    if balanced:
-        df_source_dis = pd.read_csv("training_attribute_distribution.csv", index_col=0, header=0)
-        df_factors = balance_weighs(df_factors, df_source_dis, df_raw)
 
     # changing Id to int for easy comparison
     df_factors.Id = df_factors.Id.astype(int)
@@ -170,25 +123,3 @@ def apply_weights(ids, df_raw, df_factors):
         df_corrected = df_corrected.append(df_new)
     print("\nDone!\n")
     return df_corrected
-
-
-"""
-raw_file = "extractions/new_testing_AFFACT1.txt"
-mean_file = "extractions/means/mean_arcface_testing_AFFACT1.txt"
-std_file = "extractions/stds/std_arcface_testing_AFFACT1.txt"
-df_id = pd.read_csv("ids/arcface_testing_ids.txt", sep='\s+', names=["Image", "Id"])
-
-df_mean = pd.read_csv(mean_file, header=0, index_col=0).reset_index()
-df_std = pd.read_csv(std_file, header=0, index_col=0).reset_index()
-
-df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
-partition = pd.read_csv("list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
-images = partition.loc[partition.Partition == 2].Image.values
-df_id = df_id.loc[df_id.Image.isin(images)]
-
-corrected = reweight_attributes(raw_file, df_mean, df_std, df_id, reweigh_formula="square_mean", balanced=True)
-corrected = corrected.sort_values(by="Image")
-
-print(corrected)
-# corrected.to_csv("extractions/reweighed/gt_testing_reweighed_cube_mean_AFFACT1.txt")
-"""
