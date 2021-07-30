@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 import matplotlib.pyplot as plt
 
+plt.rcParams['font.family'] = 'Palatino Linotype'
 
 def add_jpg(x):
     x = x[:-3]
@@ -77,11 +78,12 @@ for s in range(int(sample_size/2)):
     scores_diff_id += diff_id
     scores_same_id += same_id
 
-plt.figure(figsize=(8,6))
-plt.hist(scores_same_id, bins="auto", alpha=0.5, label="scores of same identity")
-plt.hist(scores_diff_id, bins="auto", alpha=0.5, label="scores of different identity")
-plt.xlabel("Score", size=14)
+fig = plt.figure(figsize=(8, 4))
+plt.hist(scores_same_id, bins="auto", alpha=0.5, label="Scores of Same Identity")
+plt.hist(scores_diff_id, bins="auto", alpha=0.5, label="Scores of Different Identity")
+plt.xlabel("Cosine Similarity Score", size=14)
 plt.ylabel("Count", size=14)
-plt.title("Score comparison between same and different identities")
-plt.legend(loc='upper left')
+plt.title("Score Comparison between Same and Different Identities")
+plt.legend(loc='upper center')
 plt.show()
+fig.savefig("../resources/histogram.pdf")

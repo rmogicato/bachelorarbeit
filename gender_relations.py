@@ -3,8 +3,8 @@ import numpy as np
 
 
 validation_file = "list_attr_celeba.txt"
-mean_file = "mean.csv"
-std_file = "std.csv"
+mean_file = "ground_truth_operations/mean.csv"
+std_file = "ground_truth_operations/std.csv"
 image_threshold = 5
 
 df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
