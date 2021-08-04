@@ -81,7 +81,7 @@ f.savefig("class_ratio.pdf")
 Below we generate a histogram that shows how many pictures are associated per identities
 """
 
-"""
+
 df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
 df_partition = pd.read_csv("list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
 df_id = pd.concat([df_id, df_partition.Partition], axis=1, join="outer")
@@ -102,17 +102,16 @@ print("under threshold: ", under_threshold)
 # generate histogram with a number of bins
 h = plt.hist(img_per_id, bins=35)
 plt.show()
-"""
+
 """
 This code calculates the source distribution of the training partition
 """
-"""
-# todo: add to helper file
+
 df_distribution = pd.DataFrame(index=attributes, columns=["positive", "negative"])
 df_training = df_attr.merge(df_partition, on="Image")
 # selecting training partition
 df_training = df_training.loc[df_training["Partition"] == 2]
 df_training = df_training.drop(columns=["Partition"])
 df_distribution["positive"], df_distribution["negative"] = get_distribution(df_training, attributes)
-df_distribution.to_csv("test_attribute_distribution.csv")
-"""
+df_distribution.to_csv("training_attribute_distribution.csv")
+

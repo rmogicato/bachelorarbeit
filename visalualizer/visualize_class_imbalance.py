@@ -1,11 +1,16 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from bokeh.io import output_file, show
-from bokeh.models import ColumnDataSource, FactorRange, Plot
+from bokeh.models import ColumnDataSource, FactorRange
 from bokeh.plotting import figure
-from bokeh.transform import dodge
 from bokeh.io import export_png
+
+"""
+This files can compare 3 detailed error rates. The detail error rate can be obtained by calling calculate_accuracy(),
+which provides us with 2 output files, the second of which is the detailed error rate.
+We generate 40 groups of bars, each group containing 3 stacked bars,
+each bar contains the false positive error rate and the false negative error rate.
+"""
 
 df_og = pd.read_csv("final_error_rates/detailed/AFFACT-A_og.csv", index_col=0, header=0)
 df_reweighed_af = pd.read_csv("final_error_rates/detailed/AFFACT-A_AF_square_sign_balanced.csv", index_col=0, header=0)

@@ -1,18 +1,9 @@
 import pandas as pd
-import numpy as np
 
 from calculate_std_mean import calculate_statistics
+from helper import get_ids_by_partition
 from reweight_attributes import reweight_attributes
 from calculate_accuracy import calculate_accuracy
-
-
-def get_ids_by_partition(partition):
-    df_ids = pd.read_csv("data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
-    df_partition = pd.read_csv("data/txt_files/list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
-    df_partition = df_partition.loc[df_partition.Partition == partition]
-    df_ids = df_ids.merge(df_partition, on="Image").drop(columns="Partition")
-    return df_ids
-
 
 testing_file = "extractions/new_testing_AFFACT1.txt"
 # arcface ids:
@@ -35,7 +26,6 @@ print("\nsquare_mean balanced unbalanced")
 df_accuracy_gt, df_detailed_gt = calculate_accuracy(df_reweighed_gt)
 
 
-
 """
 print("\ncube_sign balanced unbalanced")
 df_accuracy3, df_detailed_3 = calculate_accuracy(df_reweighed3)
@@ -45,8 +35,8 @@ df_accuracy4, df_detailed_4 = calculate_accuracy(df_reweighed4)
 
 
 # df_accuracy_og.to_csv("final_error_rates/AFFACT-A_og.csv")
-df_accuracy_af.to_csv("final_error_rates/AFFACT-A_AF_square_sign_balanced.csv")
-df_accuracy_gt.to_csv("final_error_rates/AFFACT-A_GT_square_sign_balanced.csv")
+df_accuracy_af.to_csv("error_rates/final/0_AFFACT-A_AF_square_sign_balanced.csv")
+df_accuracy_gt.to_csv("error_rates/final/0_AFFACT-A_GT_square_sign_balanced.csv")
 
 
 """

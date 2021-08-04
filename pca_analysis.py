@@ -5,7 +5,7 @@ from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 from calculate_std_mean import calculate_statistics
-from master_file import get_ids_by_partition
+from helper import get_ids_by_partition
 
 plt.rcParams['font.family'] = 'Palatino Linotype'
 

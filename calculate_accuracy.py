@@ -3,17 +3,7 @@ import numpy as np
 
 from helper import calculate_distribution
 
-pd.set_option("display.max_rows", 100)
-pd.set_option('display.max_columns', 7)
-
-# df_reweighed = pd.read_csv("extractions/new_testing_AFFACT1.txt", header=0, index_col=0)
-
-# df = df_reweighed
-
-# df = df.sort_values(by="Image")
-
-
-# binary sorting
+# this function returns -1 for all values smaller than 0, and 1 for all other values
 def binarize(x):
     if isinstance(x, float):
         if x < 0:
@@ -21,6 +11,15 @@ def binarize(x):
         else:
             x = 1
     return x
+
+"""
+This function calculates the accuracy of extracted values (both reweighted and not reweighted)
+It returns two dataframes, a undetailed one and a detailed one.
+Former is suited for easy comparison and  simply contains the balanced and unbalanced error rates in percent,
+rounded to two decimal places.
+Latter additionally contains the false negative rate and false positive rate. Here the values are not rounded and
+not in percent.
+"""
 
 
 def calculate_accuracy(df):
@@ -34,6 +33,8 @@ def calculate_accuracy(df):
     df_manual = df_raw.loc[df_raw["Image"].isin(images)]
     df_manual = df_manual.set_index(df_manual["Image"]).drop(columns="Image")
 
+    # comparing both data frames to see the differences, the columns "self" show the extracted values,
+    # "other" the ground truth values
     df_compared = df_automatic.compare(df_manual, keep_shape=True, keep_equal=True)
 
     columns = df_manual.columns
@@ -63,6 +64,7 @@ def calculate_accuracy(df):
 
     df_calculated_results = pd.DataFrame(columns=["Balanced", "Unbalanced"], index=columns)
 
+    # iterating over each attribute to obtain the balanced error rate
     for key in results:
         row = results[key]
 
@@ -77,6 +79,7 @@ def calculate_accuracy(df):
 
     average_balanced = round(np.array(balanced_accuracy).mean()*100, 2)
 
+    # iterating over each attribute to obtain the accuracy
     unbalanced_accuracy = []
     for key in results:
         row = results[key]
@@ -85,28 +88,15 @@ def calculate_accuracy(df):
                 "false_negatives"])
         unbalanced_accuracy.append(1 - accuracy)
         df_calculated_results["Unbalanced"][key] = round((1 - accuracy)*100, 2)
-        df_detailed["balanced_error_rate"][key] = 1 - accuracy
-        # print(key, accuracy)
+        df_detailed["unbalanced_error_rate"][key] = 1 - accuracy
     average_unbalanced = round(np.array(unbalanced_accuracy).mean()*100, 2)
-    """
-    balanced_er2 = []
-    for key in results:
-        row = results[key]
-        errors = 0
-        df_errors = df_compared[key].loc[(df_compared[key]["self"] != df_compared[key]["other"])]
-        for image in df_errors.index.tolist():
-            if df_errors["other"][image] == 1:
-                e = df_target_dist["positive"][key] / (row["correct_positives"]+row["false_negatives"])
-                errors += e
-            else:
-                e = df_target_dist["negative"][key] / (row["correct_negatives"]+row["false_positives"])
-                errors += e
-        balanced_er2.append(errors)
-    print("average 2: ", np.array(balanced_er2).mean())
-    """
+
     df_calculated_results.loc["Average"] = [average_balanced, average_unbalanced]
+
+    # printing both values
     print(average_balanced, average_unbalanced)
     averages = []
+    # calculate averages for each error rate type
     for t in error_rate_types:
         column = np.array(df_detailed[t].values)
         averages.append(column.mean())

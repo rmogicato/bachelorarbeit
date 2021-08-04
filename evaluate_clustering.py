@@ -3,6 +3,11 @@ import numpy as np
 from math import comb, log
 from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
 
+"""
+This file evaluates clustering and gives us such metrics as the purity, NMI score and rand score,
+based on the comparison between clustered labels and ground truth ones. 
+"""
+
 ids_clustered = pd.read_csv("ids/arcface_testing_ids.txt", sep='\s+', names=["Image", "Arc_id"])
 ids_gt = pd.read_csv("data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Gt_id"])
 partition = pd.read_csv("data/txt_files/list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])

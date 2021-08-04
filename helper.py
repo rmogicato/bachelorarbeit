@@ -39,3 +39,11 @@ def calculate_probability(df_source_dist):
         df_probability["positive"][a] = p_positive
         df_probability["negative"][a] = p_negative
     return df_probability
+
+
+def get_ids_by_partition(partition):
+    df_ids = pd.read_csv("data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
+    df_partition = pd.read_csv("data/txt_files/list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
+    df_partition = df_partition.loc[df_partition.Partition == partition]
+    df_ids = df_ids.merge(df_partition, on="Image").drop(columns="Partition")
+    return df_ids
