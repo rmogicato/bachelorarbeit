@@ -8,7 +8,7 @@ from matplotlib import rc
 plt.rcParams['font.family'] = 'Palatino Linotype'
 
 
-df_attr = pd.read_csv("list_attr_celeba.txt", sep='\s+',)
+df_attr = pd.read_csv("data/txt_files/list_attr_celeba.txt", sep='\s+', )
 attributes = df_attr.columns.to_list()[1:]
 attributes_clean = []
 

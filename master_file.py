@@ -7,8 +7,8 @@ from calculate_accuracy import calculate_accuracy
 
 
 def get_ids_by_partition(partition):
-    df_ids = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
-    df_partition = pd.read_csv("list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
+    df_ids = pd.read_csv("data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
+    df_partition = pd.read_csv("data/txt_files/list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
     df_partition = df_partition.loc[df_partition.Partition == partition]
     df_ids = df_ids.merge(df_partition, on="Image").drop(columns="Partition")
     return df_ids

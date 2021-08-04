@@ -74,7 +74,7 @@ If the parameter balanced is True, then the weights will be balanced based on th
 def reweight_attributes(raw_file, df_mean, df_std, df_id, reweigh_formula):
 
     if raw_file == "list_attr_celeba.txt":
-        df_raw = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
+        df_raw = pd.read_csv("data/txt_files/list_attr_celeba.txt", sep='\s+', header=0)
         cols = df_raw.columns.tolist()
         cols = cols[1:] + [cols[0]]
         df_raw = df_raw[cols]

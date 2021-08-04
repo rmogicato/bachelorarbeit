@@ -9,7 +9,7 @@ from master_file import get_ids_by_partition
 
 plt.rcParams['font.family'] = 'Palatino Linotype'
 
-file = "list_attr_celeba.txt"
+file = "data/txt_files/list_attr_celeba.txt"
 
 
 df_id_training = get_ids_by_partition(0)

@@ -30,7 +30,7 @@ def calculate_accuracy(df):
     df_automatic = df.applymap(binarize).set_index(df["Image"]).drop(columns="Image")
 
     # ground truth of all identities
-    df_raw = pd.read_csv("list_attr_celeba.txt", sep='\s+', header=0)
+    df_raw = pd.read_csv("data/txt_files/list_attr_celeba.txt", sep='\s+', header=0)
     df_manual = df_raw.loc[df_raw["Image"].isin(images)]
     df_manual = df_manual.set_index(df_manual["Image"]).drop(columns="Image")
 

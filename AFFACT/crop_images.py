@@ -25,7 +25,7 @@ geom = bob.ip.base.GeomNorm(
     crop_offset=(res[0]/2, res[1]/2)
 )
 
-
+# this crops images for AFFACT (224x224)
 def crop(image, annotations):
     # get coordinates
     re = [annotations["righteye_x"].values[0], annotations["righteye_y"].values[0]]
@@ -58,8 +58,8 @@ def crop(image, annotations):
     bob.ip.base.extrapolate_mask(outmask, outimage)
     return outimage
 
-
-def crop_ResNet(image, annotations):
+# this function crops images for arcface (112x112)
+def crop_arcface(image, annotations):
     # get coordinates
     re = [annotations["righteye_x"].values[0], annotations["righteye_y"].values[0]]
     le = [annotations["lefteye_x"].values[0], annotations["lefteye_y"].values[0]]
@@ -99,7 +99,7 @@ def crop_ResNet(image, annotations):
 
 
 # if res is (224, 224) then all images in source_dir are cropped to a size of 224x224 pixels and saved them in dir "img_celeba"
-# if res is (112, 112) then all images in source_dir are cropped to a size of 112x112 pixels and saved them in dir "img_resnet"
+# if res is (112, 112) then all images in source_dir are cropped to a size of 112x112 pixels and saved them in dir "img_arcface"
 for i, name in enumerate(files):
 
     p = str(round(i / len(files) * 100, 0))
@@ -117,8 +117,8 @@ for i, name in enumerate(files):
     keypoints = flandmark.loc[flandmark["id"] == name]
 
     if res == (112, 112):
-        image_out = crop_ResNet(image_color, keypoints)
-        dest = "img_resnet"
+        image_out = crop_arcface(image_color, keypoints)
+        dest = "img_arcface"
     else:
         image_out = crop(image_color, keypoints)
         dest = "img_celeba"

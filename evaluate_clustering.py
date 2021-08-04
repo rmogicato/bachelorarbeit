@@ -4,8 +4,8 @@ from math import comb, log
 from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
 
 ids_clustered = pd.read_csv("ids/arcface_testing_ids.txt", sep='\s+', names=["Image", "Arc_id"])
-ids_gt = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Gt_id"])
-partition = pd.read_csv("list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
+ids_gt = pd.read_csv("data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Gt_id"])
+partition = pd.read_csv("data/txt_files/list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
 
 partition = partition.loc[partition.Partition == 2]
 ids_gt = ids_gt.merge(partition, on="Image").drop(columns="Partition")

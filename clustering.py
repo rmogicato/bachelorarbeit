@@ -17,7 +17,7 @@ from sklearn.metrics import silhouette_samples, silhouette_score
 df_arcface = pd.read_csv("arc_face/arcface_testing_v2.csv")
 df_arcface = df_arcface.rename(columns={"Unnamed: 0": "Image"})
 
-df_identities = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
+df_identities = pd.read_csv("data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
 images = df_arcface["Image"]
 
 
