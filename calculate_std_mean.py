@@ -6,11 +6,12 @@ from sklearn import preprocessing
 
 
 # gets data frame from txt files
-from helper import calculate_probability, calculate_distribution
+from helper import calculate_probability, calculate_distribution, get_ids_by_partition
 
 
+# getting data frame
 def get_df(filename, df_id):
-    if filename == "list_attr_celeba.txt":
+    if filename == "data/txt_files/list_attr_celeba.txt":
         df = pd.read_csv(filename, sep='\s+', header=0)
         df = df.merge(df_id, on="Image")
         df = df.sort_values(by="Id")
@@ -24,6 +25,13 @@ def get_df(filename, df_id):
         # merge on Image to get Id for each image
         df = df.merge(df_id, how="inner", on="Image")
     return df
+
+
+"""
+This function calculates the mean and standard deviation of a file.
+Provide the id with a df_id that contains the image and id (ground truth/clustered) on which the calculations should be based on.
+
+"""
 
 
 def calculate_statistics(filename, df_id, balanced=False):
@@ -44,7 +52,17 @@ def calculate_statistics(filename, df_id, balanced=False):
     ids = sorted(ids)
 
     # calculating the probability which we later use if we use the balanced std/mean
+    training_ids = get_ids_by_partition(2)
+
+    cols = df_attr.columns.tolist()
+    training_df = get_df("data/txt_files/list_attr_celeba.txt", training_ids)
+    # making sure that the columns are in the same order
+    training_df = training_df[cols]
+    """
+    Incorrect values, as the results in my thesis were calculated with
     df_source_dist = calculate_distribution(df_attr)
+    """
+    df_source_dist = calculate_distribution(training_df)
     df_probability = calculate_probability(df_source_dist)
 
     for i, identity in enumerate(ids):
