@@ -14,6 +14,7 @@ from bob.extension import rc
 from skimage import io
 from matplotlib import pyplot as plt
 
+# set the source directory to the folder with the desired images
 SOURCE_DIR_PATH = "../../data/img_resnet/img_validation/"
 
 internal_path = pkg_resources.resource_filename(
@@ -69,4 +70,5 @@ for i, name in enumerate(files):
     arcs[name] = vector[0]
 
 df = pd.DataFrame.from_dict(arcs, orient="index")
+# save as csv
 df.to_csv("arcface_validation.csv")

@@ -2,12 +2,12 @@ import pandas as pd
 import numpy as np
 
 
-validation_file = "data/txt_files/list_attr_celeba.txt"
-mean_file = "_DEPRECATED/ground_truth_operations/mean.csv"
+validation_file = "../data/txt_files/list_attr_celeba.txt"
+mean_file = "ground_truth_operations/mean.csv"
 std_file = "_DEPRECATED/ground_truth_operations/std.csv"
 image_threshold = 5
 
-df_id = pd.read_csv("data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
+df_id = pd.read_csv("../data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
 df_raw = pd.read_csv(validation_file, header=0, sep='\s+')
 df_raw = df_raw.merge(df_id, how="left", on="Image")
 df_mean = pd.read_csv(mean_file, header=0, index_col=0).reset_index()

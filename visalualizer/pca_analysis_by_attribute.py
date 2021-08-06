@@ -8,10 +8,11 @@ from altair import *
 import matplotlib.backends.backend_pdf
 plt.rcParams['font.family'] = 'Palatino Linotype'
 
-
+# either "Mean" or "Standard Deviation"
 stat_type = "Mean"
-file_training = "_DEPRECATED/calculated_csv/final/attr_mean_training.csv"
-file_validation = "_DEPRECATED/calculated_csv/final/attr_mean_validation.csv"
+# execute pca_analysis.py to get these two files
+file_training = "attr_mean_training.csv"
+file_validation = "attr_mean_validation.csv"
 
 df_raw_training = pd.read_csv(file_training, header=0, index_col=0)
 df_raw_validation = pd.read_csv(file_validation, header=0, index_col=0)

@@ -1,12 +1,17 @@
 import numpy as np
 import pandas as pd
 
+"""
+This code calculates the distribution of a dataframe where the first 40 columns are the attributes
+"""
+
 
 def calculate_distribution(df_raw):
     attributes = df_raw.columns[:40].tolist()
     df_dist = pd.DataFrame(index=attributes, columns=["positive", "negative"])
     for a in attributes:
         col = np.array(df_raw[a].to_list())
+        # number of positive values in a column (attribute) in relation to all values of that column
         positive = np.count_nonzero(col > 0) / len(col)
         negative = 1 - positive
         df_dist["positive"][a] = positive
@@ -41,6 +46,7 @@ def calculate_probability(df_source_dist):
     return df_probability
 
 
+# returns ids of the partition, 0=training, 1=validation, 2=test
 def get_ids_by_partition(partition):
     df_ids = pd.read_csv("data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
     df_partition = pd.read_csv("data/txt_files/list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])

@@ -14,8 +14,9 @@ def add_png(x):
     x = x[:-3]
     return x + "png"
 
-
-df_arcface = pd.read_csv("arcface_validation_v2.csv")
+# this file generates a histogram when given a dataframe of clustered identities (df_arcface)
+# and a dataframe of labeled identities
+df_arcface = pd.read_csv("../ArcFace/arcface_validation_v2.csv")
 df_arcface = df_arcface.rename(columns={"Unnamed: 0": "Image"})
 df_arcface["Image"] = df_arcface["Image"].apply(add_jpg)
 
@@ -66,12 +67,14 @@ def compare_ids(id1, id2):
 scores_same_id = []
 scores_diff_id = []
 
+# change sample size
 sample_size = 300
 rand_ids = np.random.choice(ids, size=sample_size)
 rand_ids = np.unique(rand_ids)
 sample_size = len(rand_ids)
 
 for s in range(int(sample_size/2)):
+    # comparing first and last id, then second to second last etc.
     id1 = rand_ids[s]
     id2 = rand_ids[sample_size-s-1]
     same_id, diff_id = compare_ids(id1, id2)

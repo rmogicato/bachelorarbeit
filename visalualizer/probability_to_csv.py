@@ -1,7 +1,7 @@
-from reweight_attributes import balance_weighs, calculate_probability
-from helper import calculate_distribution
+from helper import calculate_distribution, calculate_probability
 import pandas as pd
 
+# execute to get the specific probability values used for the domain adaption
 df_raw = pd.read_csv("../extractions/new_testing_AFFACT1.txt", header=0, index_col=0)
 
 df_target_dist = calculate_distribution(df_raw)

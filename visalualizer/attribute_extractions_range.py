@@ -3,6 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import boxplot
 
+"""
+This file generates a boxplot to give us an idea how large ranges of extracted values are.
+
+"""
+
+
 plt.rcParams["font.family"] = "Palatino Linotype"
 
 df_validation_1 = pd.read_csv("../extractions/new_validation_AFFACT1.txt", header=0, index_col=0)

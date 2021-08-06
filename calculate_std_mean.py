@@ -30,7 +30,6 @@ def get_df(filename, df_id):
 """
 This function calculates the mean and standard deviation of a file.
 Provide the id with a df_id that contains the image and id (ground truth/clustered) on which the calculations should be based on.
-
 """
 
 
@@ -52,33 +51,36 @@ def calculate_statistics(filename, df_id, balanced=False):
     ids = sorted(ids)
 
     # calculating the probability which we later use if we use the balanced std/mean
-    training_ids = get_ids_by_partition(2)
+    training_ids = get_ids_by_partition(0)
 
     cols = df_attr.columns.tolist()
     training_df = get_df("data/txt_files/list_attr_celeba.txt", training_ids)
+
     # making sure that the columns are in the same order
     training_df = training_df[cols]
-    """
-    Incorrect values, as the results in my thesis were calculated with
-    df_source_dist = calculate_distribution(df_attr)
-    """
     df_source_dist = calculate_distribution(training_df)
     df_probability = calculate_probability(df_source_dist)
+    df_probability = df_probability.astype(float).round(2)  # rounding to two decimal places
 
     for i, identity in enumerate(ids):
         # take all rows with the correct id (all of the same person)
         df_person = df_attr.loc[df_attr["Id"] == identity]
 
+        # if balanced, we modify values according to probability
         if balanced:
             means = {}
 
+            # iterating through each attribute
             for j, a in enumerate(df_person.columns.to_list()[:40]):
                 values = df_person[a].values
                 balanced_values = []
+                # modifying each value according to the probability of that attribute
                 for v in values:
+                    # negative values are modified with the negative probability
                     if v < 0:
                         p = df_probability.loc[a]["negative"]
                         balanced_values.append(v * p)
+                    # positive values are modified with the positive probability
                     else:
                         p = df_probability.loc[a]["positive"]
                         balanced_values.append(v * p)
@@ -87,6 +89,7 @@ def calculate_statistics(filename, df_id, balanced=False):
             df_mean.loc[identity] = means
 
             stds = {}
+            # now we calculate the standard deviation of each attribute using the modified values
             for j, a in enumerate(df_person.columns.to_list()[:40]):
                 xs = df_person[a].values
                 # difference between each value and the mean of a of i
@@ -98,6 +101,7 @@ def calculate_statistics(filename, df_id, balanced=False):
             stds["n"] = len(df_person.index)
             df_std.loc[identity] = stds
 
+        # otherwise we just calculate the normal mean and standard deviation
         else:
             # adds values to df of std
             std = df_person.std(axis=0, ddof=0)
@@ -115,16 +119,3 @@ def calculate_statistics(filename, df_id, balanced=False):
         sys.stdout.flush()
     print("\nDone!\n")
     return df_std, df_mean
-
-"""
-df_id = pd.read_csv("identity_CelebA.txt", sep='\s+', names=["Image", "Id"])
-partition = pd.read_csv("list_eval_partition.txt", sep='\s+', names=["Image", "Partition"])
-images = partition.loc[partition.Partition == 2].Image.values
-df_id = df_id.loc[df_id.Image.isin(images)]
-
-
-df_std, df_mean = calculate_statistics("list_attr_celeba.txt", df_id)
-
-# df_mean.to_csv("extractions/means/mean_gt_testing_AFFACT1.txt")
-# df_std.to_csv("extractions/stds/std_gt_testing_AFFACT1.txt")
-"""

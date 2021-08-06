@@ -9,8 +9,7 @@ from helper import get_ids_by_partition
 
 plt.rcParams['font.family'] = 'Palatino Linotype'
 
-file = "data/txt_files/list_attr_celeba.txt"
-
+file = "../data/txt_files/list_attr_celeba.txt"
 
 df_id_training = get_ids_by_partition(0)
 df_std_training, df_mean_training = calculate_statistics(file, df_id_training, balanced=False)
@@ -32,13 +31,16 @@ files = ["Standard Deviation", "Mean"]
 # validation_files = [df_mean_validation, df_std_validation]
 colors = ["blue", "red"]
 
+# iterating through both files (type of statistical measurement)
 for idx, name in enumerate(files):
     df_training = training_dfs[idx]
     df_validation = validation_dfs[idx]
-    # scaling data?
     pca = PCA()
+    # fitting on training data
     pca.fit(df_training)
+    # transforming to validation data
     pca_data = pca.transform(df_validation)
+    # getting the number of explained variation
     percentage_var = np.round(pca.explained_variance_ratio_ * 100, decimals=1)
     labels = ["PC" + str(x) for x in range(1, len(percentage_var) + 1)]
 
