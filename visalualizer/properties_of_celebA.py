@@ -1,10 +1,7 @@
-import bokeh
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from bokeh.io import show
 from matplotlib.pyplot import figure
-from matplotlib import rc
 plt.rcParams['font.family'] = 'Palatino Linotype'
 
 """

@@ -1,11 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA
-from sklearn.cluster import DBSCAN
-from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-from altair import *
-import matplotlib.backends.backend_pdf
+
 plt.rcParams['font.family'] = 'Palatino Linotype'
 
 # either "Mean" or "Standard Deviation"
@@ -48,5 +45,5 @@ for i, attribute in enumerate(attributes):
     plt.xlabel("PC1 - {0}%".format(percentage_var[0]))
     plt.ylabel("PC2 - {0}%".format(percentage_var[1]))
 
-    fig.savefig("pca_by_attribute_validation/"+"PCA_"+stat_type+"_"+attribute+".pdf")
+    fig.savefig("../pca_by_attribute_validation/"+"PCA_"+stat_type+"_"+attribute+".pdf")
     plt.show()

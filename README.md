@@ -22,6 +22,7 @@ And the ArcFace network here: [LResNet100E-IR,ArcFace@ms1m-refine-v2](https://gi
 In a first step we crop and align the images and sort them by their partition.
 Execute `AFFACT/crop_images.py` to achieve this and make sure that SOURCE_DIR_PATH is set to your image directory.
 The default output folders are set to be `data/img_celeba/img_validation`, `/img_testing`, and `/img_training` according to the set the images are in.
+Note that you need to create the folder structure before cropping the images.
 To get the correct crop for AFFACT, the resolution variable `res` should be set to (224, 224).
 
 To extract attribute information, execute `extract.py`. Make sure you set the correct model and network (unbalanced/balanced).

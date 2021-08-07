@@ -1,9 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
-import math
-from sklearn import preprocessing
-
+import os
 
 # gets data frame from txt files
 from helper import calculate_probability, calculate_distribution, get_ids_by_partition
@@ -12,7 +10,9 @@ from helper import calculate_probability, calculate_distribution, get_ids_by_par
 # getting data frame
 def get_df(filename, df_id):
     if filename == "data/txt_files/list_attr_celeba.txt":
-        df = pd.read_csv(filename, sep='\s+', header=0)
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+
+        df = pd.read_csv(dir_path + "/" + filename, sep='\s+', header=0)
         df = df.merge(df_id, on="Image")
         df = df.sort_values(by="Id")
     else:
@@ -54,6 +54,8 @@ def calculate_statistics(filename, df_id, balanced=False):
     training_ids = get_ids_by_partition(0)
 
     cols = df_attr.columns.tolist()
+    cols.remove("Image")
+    cols.remove("Id")
     training_df = get_df("data/txt_files/list_attr_celeba.txt", training_ids)
 
     # making sure that the columns are in the same order

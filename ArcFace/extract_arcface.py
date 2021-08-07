@@ -14,8 +14,7 @@ from bob.extension import rc
 from skimage import io
 from matplotlib import pyplot as plt
 
-# set the source directory to the folder with the desired images
-SOURCE_DIR_PATH = "../../data/img_resnet/img_validation/"
+SOURCE_DIR_PATH = "../data/img_arcface/img_validation/"
 
 internal_path = pkg_resources.resource_filename(
     __name__, os.path.join("data", "arcface_insightface"),
@@ -57,7 +56,12 @@ for i, name in enumerate(files):
     sys.stdout.write("\rProgress: " + p + "% - current file: " + name)
     sys.stdout.flush()
     image = bob.io.base.load(SOURCE_DIR_PATH + name)
-    # adding 4th dimension
+    """
+    # convert to the required data type
+    X = image.astype(numpy.float32) / 255.
+    X = check_array(X, allow_nd=True)
+    """
+    # adding 4th dimension?
     X = np.array([image])
 
     def _transform(X):
@@ -70,5 +74,4 @@ for i, name in enumerate(files):
     arcs[name] = vector[0]
 
 df = pd.DataFrame.from_dict(arcs, orient="index")
-# save as csv
-df.to_csv("arcface_validation.csv")
+df.to_csv("arcface_validation_v2.csv")

@@ -10,8 +10,9 @@ import bob.io.base
 import bob.io.image
 
 # load network model
-MainModel = imp.load_source('MainModel', "./AFFACT_balanced.py")
-network = torch.load("./AFFACT_balanced.pth")
+# either AFFACT_balanced.py and AFFACT_balanced.pth or AFFACT_E.py and AFFACT_E.pth
+MainModel = imp.load_source('MainModel', "./AFFACT_E.py")
+network = torch.load("./AFFACT_E.pth")
 
 # setup network
 network.eval()
@@ -91,5 +92,5 @@ for i, name in enumerate(files):
     series = pd.Series(attributes, index=df.columns)
     df = df.append(series, ignore_index=True)
 
-df.to_csv(path_or_buf="./final_extraction_AFFACT1_validation.txt")
+df.to_csv(path_or_buf="./AFFACT-B_validation.txt")
 

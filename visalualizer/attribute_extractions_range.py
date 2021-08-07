@@ -11,7 +11,7 @@ This file generates a boxplot to give us an idea how large ranges of extracted v
 
 plt.rcParams["font.family"] = "Palatino Linotype"
 
-df_validation_1 = pd.read_csv("../extractions/new_validation_AFFACT1.txt", header=0, index_col=0)
+df_validation_1 = pd.read_csv("../_DEPRECATED/extractions/new_validation_AFFACT1.txt", header=0, index_col=0)
 print(df_validation_1)
 attributes = df_validation_1.columns.to_list()[:40]
 attributes_clean = []

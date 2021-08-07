@@ -10,9 +10,9 @@ import os.path, sys
 
 SOURCE_DIR_PATH = "../data/img_celeba/img_celeba/"
 
-# this file contains manually labeld facial landmarks
-flandmark = pd.read_csv("../txt_files/list_landmarks_celeba.txt", sep="\s+", header=0)
-eval_partition = pd.read_csv("../txt_files/list_eval_partition.txt", sep="\s+", header=0)
+# this file contains manually labeled facial landmarks
+flandmark = pd.read_csv("../data/txt_files/list_landmarks_celeba.txt", sep="\s+", header=0)
+eval_partition = pd.read_csv("../data/txt_files/list_eval_partition.txt", sep="\s+", names=["Image", "Partition"])
 files = os.listdir(SOURCE_DIR_PATH)
 
 res = (224, 224)

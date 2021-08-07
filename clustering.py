@@ -2,20 +2,14 @@ from sklearn.cluster import AgglomerativeClustering
 import numpy as np
 import pandas as pd
 import sklearn.cluster
-import itertools
-from scipy.cluster.hierarchy import dendrogram
-from sklearn.model_selection import GridSearchCV
 from matplotlib import pyplot as plt
-from sklearn.decomposition import PCA
-import scipy.cluster.hierarchy as shc
-from yellowbrick.cluster import KElbowVisualizer
 import sys
-from sklearn.metrics import silhouette_samples, silhouette_score
+from sklearn.metrics import silhouette_score
 
 # np.set_printoptions(threshold=sys.maxsize)
 
 # set to extractions of arcface
-df_arcface = pd.read_csv("ArcFace/arcface_testing_v2.csv")
+df_arcface = pd.read_csv("ArcFace/arcface_testing.csv")
 df_arcface = df_arcface.rename(columns={"Unnamed: 0": "Image"})
 
 df_identities = pd.read_csv("data/txt_files/identity_CelebA.txt", sep='\s+', names=["Image", "Id"])

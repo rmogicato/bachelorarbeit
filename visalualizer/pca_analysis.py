@@ -1,15 +1,13 @@
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA
-from sklearn.cluster import DBSCAN
-from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 from calculate_std_mean import calculate_statistics
 from helper import get_ids_by_partition
 
 plt.rcParams['font.family'] = 'Palatino Linotype'
 
-file = "../data/txt_files/list_attr_celeba.txt"
+file = "data/txt_files/list_attr_celeba.txt"
 
 df_id_training = get_ids_by_partition(0)
 df_std_training, df_mean_training = calculate_statistics(file, df_id_training, balanced=False)
